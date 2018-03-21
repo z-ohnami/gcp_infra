@@ -7,9 +7,29 @@ resource "google_compute_global_forwarding_rule" "wp-global-forwading-rule" {
   port_range = "80"
 }
 
+resource "google_compute_global_forwarding_rule" "wp-global-forwading-rule-https" {
+  name       = "wp-global-forwading-rule-https"
+  target     = "${google_compute_target_https_proxy.wp-target-https-proxy.self_link}"
+  ip_address = "${google_compute_global_address.wp-global-address.address}"
+  ip_protocol = "HTTPS"
+  port_range = "443"
+}
+
 resource "google_compute_target_http_proxy" "wp-target-http-proxy" {
   name        = "wp-target-http-proxy"
   url_map     = "${google_compute_url_map.wp-url-map.self_link}"
+}
+
+resource "google_compute_target_https_proxy" "wp-target-https-proxy" {
+  name        = "wp-target-https-proxy"
+  url_map     = "${google_compute_url_map.wp-url-map.self_link}"
+  ssl_certificates = ["${google_compute_ssl_certificate.wp-ssl-certificate.self_link}"]
+}
+
+resource "google_compute_ssl_certificate" "wp-ssl-certificate" {
+  name        = "wp-ssl-certificate"
+  private_key = "${file("credentials/private.key")}"
+  certificate = "${file("credentials/certificate.crt")}"
 }
 
 resource "google_compute_url_map" "wp-url-map" {
