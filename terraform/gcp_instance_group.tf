@@ -6,4 +6,14 @@ resource "google_compute_instance_group" "wp-app-group" {
   instances = [
     "${google_compute_instance.wp-app.self_link}"
   ]
+
+  named_port {
+    name = "http"
+    port = "80"
+  }
+
+  named_port {
+    name = "https"
+    port = "443"
+  }
 }

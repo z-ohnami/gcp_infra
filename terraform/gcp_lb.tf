@@ -17,39 +17,44 @@ resource "google_compute_url_map" "wp-url-map" {
   description     = "wp-url-map"
   default_service = "${google_compute_backend_service.wp-backend-service.self_link}"
 
-  host_rule {
-    hosts        = ["good-sleep.tips"]
-    path_matcher = "allpaths"
-  }
+  # host_rule {
+  #   hosts        = ["good-sleep.tips"]
+  #   path_matcher = "allpaths"
+  # }
 
-  path_matcher {
-    name            = "allpaths"
-    default_service = "${google_compute_backend_service.wp-backend-service.self_link}"
+  # path_matcher {
+  #   name            = "allpaths"
+  #   default_service = "${google_compute_backend_service.wp-backend-service.self_link}"
 
-    path_rule {
-      paths   = ["/*"]
-      service = "${google_compute_backend_service.wp-backend-service.self_link}"
-    }
-  }
+  #   path_rule {
+  #     paths   = ["/*"]
+  #     service = "${google_compute_backend_service.wp-backend-service.self_link}"
+  #   }
+  # }
 }
 
 resource "google_compute_backend_service" "wp-backend-service" {
   name        = "wp-backend-service"
   port_name   = "http"
   protocol    = "HTTP"
-  timeout_sec = 10
+  timeout_sec = 30
+  enable_cdn  = false
 
   backend {
     # group = "${google_compute_instance_group_manager.webservers.instance_group}"
     group = "${google_compute_instance_group.wp-app-group.self_link}"
   }
 
-  health_checks = ["${google_compute_http_health_check.wp-health-check.self_link}"]
+  health_checks = ["${google_compute_health_check.wp-health-check.self_link}"]
 }
 
-resource "google_compute_http_health_check" "wp-health-check" {
-  name               = "wp-health-check"
-  request_path       = "/"
-  check_interval_sec = 1
-  timeout_sec        = 1
+resource "google_compute_health_check" "wp-health-check" {
+  name = "wp-health-check"
+
+  timeout_sec        = 5
+  check_interval_sec = 5
+
+  tcp_health_check {
+    port = "80"
+  }
 }

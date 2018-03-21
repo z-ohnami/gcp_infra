@@ -15,15 +15,15 @@ resource "google_dns_record_set" "wp-dns-record-set" {
   ]
 }
 
-resource "google_dns_record_set" "wp-dns-record-set-cname" {
+resource "google_dns_record_set" "wp-dns-record-set-www" {
   name = "www.${google_dns_managed_zone.wp-dns-zone.dns_name}"
-  type = "CNAME"
+  type = "A"
   ttl  = 300
 
   managed_zone = "${google_dns_managed_zone.wp-dns-zone.name}"
 
   rrdatas = [
-    "${google_dns_record_set.wp-dns-record-set.name}"
+    "${google_compute_global_address.wp-global-address.address}"
   ]
 }
 
