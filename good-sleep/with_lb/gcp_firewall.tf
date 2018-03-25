@@ -11,5 +11,5 @@ resource "google_compute_firewall" "good-sleep-fw" {
     ports    = ["22", "80", "443"]
   }
 
-  target_tags = ["${google_compute_instance.good-sleep-wp.tags}"]
+  target_tags = ["${google_compute_instance.wp-app.tags}"]
 }

@@ -1,5 +1,5 @@
-resource "google_compute_instance" "good-sleep-wp" {
-  name         = "good-sleep-wp"
+resource "google_compute_instance" "wp-app" {
+  name         = "wp-app"
   machine_type = "f1-micro"
   zone         = "asia-northeast1-a"
   description  = "wp ap server"
@@ -12,13 +12,13 @@ resource "google_compute_instance" "good-sleep-wp" {
   }
 
   attached_disk {
-    source = "good-sleep-disk"
+    source = "wp-disk"
     mode   = "READ_WRITE"
   }
 
   network_interface {
     access_config {
-      nat_ip = "${google_compute_address.good-sleep-address.address}"
+      // Ephemeral IP
     }
 
     subnetwork = "${google_compute_subnetwork.good-sleep-sub-nw.name}"
