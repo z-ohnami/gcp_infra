@@ -1,5 +1,5 @@
-terraform/credentials/*
-!terraform/credentials/.gitkeep
-terraform/.terraform/*
-terraform/terraform.tfstate
-terraform/terraform.tfstate.backup
+*/credentials/*
+!*/credentials/.gitkeep
+*/.terraform/*
+terraform.tfstate
+terraform.tfstate.backup
